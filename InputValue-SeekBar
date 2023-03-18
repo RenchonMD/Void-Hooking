@@ -1,0 +1,33 @@
+bool Hook;
+float ChangeValue;
+
+void (*hooking) (void* _this, float value); // float, int
+void (*_update)(void *instance);
+void update(void *instance) {
+	if(instance != NULL) {
+		if(Hook) {
+		hooking(instance, ChangeValue);
+		}
+	}
+	_update(instance);
+}
+
+
+bool Hooking;
+
+
+hooking = (void(*)(void *, float))getAbsoluteAddress(targetLibName, 0x000000); // put your void Offset   
+MSHookFunction((void *)getAbsoluteAddress("libil2cpp.so", 0x000000), (void *) update, (void **) &_update); // put update Offset
+
+
+OBFUSCATE("10_SeekBar_Change Value"),
+OBFUSCATE("50_Toggle_Hook"),
+
+
+
+case 10:
+ChangeValue = value;
+Break;
+case 50:
+Hook = boolean;
+Break;
